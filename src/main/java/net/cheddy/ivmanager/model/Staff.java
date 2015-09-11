@@ -9,12 +9,14 @@ public class Staff {
 	private String surname;
 	private String othernames;
 	@JsonIgnore
+	private String passwordSalt;
+	@JsonIgnore
 	private String passwordHash;
+	private long rankId;
 
 	public Staff() {
 
 	}
-
 
 	/**
 	 * @return the id
@@ -85,4 +87,33 @@ public class Staff {
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
 	}
+
+	/**
+	 * @return the passwordSalt
+	 */
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
+
+	/**
+	 * @param passwordSalt the passwordSalt to set
+	 */
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
+	}
+
+	/**
+	 * @return the rankId
+	 */
+	public long getRankId() {
+		return rankId;
+	}
+
+	/**
+	 * @param rankId the rankId to set
+	 */
+	public void setRankId(long rankId) {
+		this.rankId = rankId;
+	}
+
 }

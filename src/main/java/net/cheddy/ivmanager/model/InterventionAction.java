@@ -3,12 +3,13 @@ package net.cheddy.ivmanager.model;
 import org.joda.time.DateTime;
 
 public class InterventionAction {
-	
+
 	private long id;
+	private long interventionId;
 	private String description;
 	private String detail;
-	private DateTime datetime;
-	
+	private DateTime dateTime;
+
 	public InterventionAction() {
 	}
 
@@ -20,10 +21,26 @@ public class InterventionAction {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the interventionId
+	 */
+	public long getInterventionId() {
+		return interventionId;
+	}
+
+	/**
+	 * @param interventionId
+	 *            the interventionId to set
+	 */
+	public void setInterventionId(long interventionId) {
+		this.interventionId = interventionId;
 	}
 
 	/**
@@ -34,7 +51,8 @@ public class InterventionAction {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -48,7 +66,8 @@ public class InterventionAction {
 	}
 
 	/**
-	 * @param detail the detail to set
+	 * @param detail
+	 *            the detail to set
 	 */
 	public void setDetail(String detail) {
 		this.detail = detail;
@@ -57,15 +76,16 @@ public class InterventionAction {
 	/**
 	 * @return the datetime
 	 */
-	public DateTime getDatetime() {
-		return datetime;
+	public DateTime getDateTime() {
+		return dateTime;
 	}
 
 	/**
-	 * @param datetime the datetime to set
+	 * @param datetime
+	 *            the datetime to set
 	 */
-	public void setDatetime(DateTime datetime) {
-		this.datetime = datetime;
+	public void setDateTime(DateTime datetime) {
+		this.dateTime = datetime;
 	}
 
 }

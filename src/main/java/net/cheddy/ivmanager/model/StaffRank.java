@@ -2,13 +2,14 @@ package net.cheddy.ivmanager.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class Hospital {
+public class StaffRank {
 
 	private long id = -1;
 	@NotEmpty
 	private String name;
+	private int permissions = 0;
 	
-	public Hospital() {
+	public StaffRank() {
 	}
 
 	/**
@@ -38,5 +39,19 @@ public class Hospital {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * @return the permissions
+	 */
+	public int getPermissions() {
+		return permissions;
+	}
+
+	/**
+	 * @param permissions the permissions to set
+	 */
+	public void setPermissions(int permissions) {
+		this.permissions = permissions;
+	}
+
 }

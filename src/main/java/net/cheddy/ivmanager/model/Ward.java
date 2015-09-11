@@ -1,9 +1,10 @@
 package net.cheddy.ivmanager.model;
 
+
 public class Ward {
 
-	
-	private Hospital hospital;
+	private long id;
+	private long hospitalId;
 	private String name;
 	
 	public Ward() {
@@ -11,17 +12,31 @@ public class Ward {
 	}
 
 	/**
-	 * @return the hospital
+	 * @return the id
 	 */
-	public Hospital getHospital() {
-		return hospital;
+	public long getId() {
+		return id;
 	}
 
 	/**
-	 * @param hospital the hospital to set
+	 * @param id the id to set
 	 */
-	public void setHospital(Hospital hospital) {
-		this.hospital = hospital;
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the hospitalId
+	 */
+	public long getHospitalId() {
+		return hospitalId;
+	}
+
+	/**
+	 * @param hospitalId the hospitalId to set
+	 */
+	public void setHospitalId(long hospitalId) {
+		this.hospitalId = hospitalId;
 	}
 
 	/**
@@ -37,5 +52,7 @@ public class Ward {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 
 }

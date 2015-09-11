@@ -1,9 +1,13 @@
 package net.cheddy.ivmanager.model;
 
+import java.sql.Date;
+
+
 public class Patient {
-	
+
 	private long id;
 	private long rtx;
+	private Date dob;
 	private String surname;
 	private String othernames;
 
@@ -19,7 +23,8 @@ public class Patient {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -33,10 +38,25 @@ public class Patient {
 	}
 
 	/**
-	 * @param rtx the rtx to set
+	 * @param rtx
+	 *            the rtx to set
 	 */
 	public void setRtx(long rtx) {
 		this.rtx = rtx;
+	}
+
+	/**
+	 * @return the dob
+	 */
+	public Date getDob() {
+		return dob;
+	}
+
+	/**
+	 * @param dob the dob to set
+	 */
+	public void setDob(Date dob) {
+		this.dob = dob;
 	}
 
 	/**
@@ -47,7 +67,8 @@ public class Patient {
 	}
 
 	/**
-	 * @param surname the surname to set
+	 * @param surname
+	 *            the surname to set
 	 */
 	public void setSurname(String surname) {
 		this.surname = surname;
@@ -61,7 +82,8 @@ public class Patient {
 	}
 
 	/**
-	 * @param othernames the othernames to set
+	 * @param othernames
+	 *            the othernames to set
 	 */
 	public void setOthernames(String othernames) {
 		this.othernames = othernames;

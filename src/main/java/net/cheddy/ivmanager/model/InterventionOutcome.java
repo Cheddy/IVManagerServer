@@ -1,14 +1,15 @@
 package net.cheddy.ivmanager.model;
 
-import java.sql.Date;
+import org.joda.time.DateTime;
 
 public class InterventionOutcome {
-	
+
 	private long id;
+	private long interventionId;
 	private String description;
 	private String detail;
-	private Date date;
-	
+	private DateTime dateTime;
+
 	public InterventionOutcome() {
 	}
 
@@ -20,10 +21,26 @@ public class InterventionOutcome {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the interventionId
+	 */
+	public long getInterventionId() {
+		return interventionId;
+	}
+
+	/**
+	 * @param interventionId
+	 *            the interventionId to set
+	 */
+	public void setInterventionId(long interventionId) {
+		this.interventionId = interventionId;
 	}
 
 	/**
@@ -34,7 +51,8 @@ public class InterventionOutcome {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -48,24 +66,26 @@ public class InterventionOutcome {
 	}
 
 	/**
-	 * @param detail the detail to set
+	 * @param detail
+	 *            the detail to set
 	 */
 	public void setDetail(String detail) {
 		this.detail = detail;
 	}
 
 	/**
-	 * @return the date
+	 * @return the datetime
 	 */
-	public Date getDate() {
-		return date;
+	public DateTime getDateTime() {
+		return dateTime;
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param datetime
+	 *            the datetime to set
 	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDateTime(DateTime datetime) {
+		this.dateTime = datetime;
 	}
 
 }

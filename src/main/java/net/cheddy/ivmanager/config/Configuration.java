@@ -1,33 +1,62 @@
 package net.cheddy.ivmanager.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
+import io.dropwizard.db.DataSourceFactory;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class Configuration extends io.dropwizard.Configuration {
 
-    @NotEmpty
-    private String template = "Template";
+	@Valid
+	@NotNull
+	private DataSourceFactory database = new DataSourceFactory() {
+		@Override
+		public String getDriverClass() {
+			return "com.mysql.jdbc.Driver";
+		}
+		public String getUrl() {
+			return "jdbc:mysql://localhost:3306/IVManager";
+		};
+		public String getUser() {
+			return "root";
+		};
+		public String getPassword() {
+			return "123eRTy789!)";
+		};
+	};
 
-    @NotEmpty
-    private String defaultName = "Intervention Manager Server";
+	private String cacheBuilderSpec = "maximumSize=10000, expireAfterAccess=10m";
+	
+	/**
+	 * @return the database
+	 */
+	public DataSourceFactory getDatabase() {
+		return database;
+	}
 
-    @JsonProperty
-    public String getTemplate() {
-        return template;
-    }
+	/**
+	 * @param database
+	 *            the database to set
+	 */
+	public void setDatabase(DataSourceFactory database) {
+		this.database = database;
+	}
 
-    @JsonProperty
-    public void setTemplate(String template) {
-        this.template = template;
-    }
+	/**
+	 * @return the cacheBuilderSpec
+	 */
+	public String getCacheBuilderSpec() {
+		return cacheBuilderSpec;
+	}
 
-    @JsonProperty
-    public String getDefaultName() {
-        return defaultName;
-    }
+	/**
+	 * @param cacheBuilderSpec the cacheBuilderSpec to set
+	 */
+	public void setCacheBuilderSpec(String cacheBuilderSpec) {
+		this.cacheBuilderSpec = cacheBuilderSpec;
+	}
 
-    @JsonProperty
-    public void setDefaultName(String name) {
-        this.defaultName = name;
-    }
+
+
+	
 }

@@ -1,9 +1,11 @@
 package net.cheddy.ivmanager.model;
 
 
+
 public class InterventionDetail {
 	
 	private long id;
+	private long interventionId;
 	private String description;
 	private String detail;
 	
@@ -22,6 +24,20 @@ public class InterventionDetail {
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the interventionId
+	 */
+	public long getInterventionId() {
+		return interventionId;
+	}
+
+	/**
+	 * @param interventionId the interventionId to set
+	 */
+	public void setInterventionId(long interventionId) {
+		this.interventionId = interventionId;
 	}
 
 	/**
@@ -51,4 +67,5 @@ public class InterventionDetail {
 	public void setDetail(String detail) {
 		this.detail = detail;
 	}
+	
 }

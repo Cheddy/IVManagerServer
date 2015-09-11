@@ -1,28 +1,35 @@
 package net.cheddy.ivmanager.model;
 
+import javax.validation.constraints.NotNull;
+
 import org.joda.time.DateTime;
 
-
 public class Intervention {
-	
+
 	private long id;
-	private Patient patient;
-	private Staff staff;
-	private InterventionDetail[] details;
-	private InterventionAction[] actions;
-	private InterventionOutcome[] outcomes;
+	@NotNull
+	private long patientId;
+	@NotNull
+	private long wardId;
+	@NotNull
+	private long staffId;
+	@NotNull
+	private DateTime dateTime;
+	@NotNull
 	private boolean verified;
 	private DateTime verifiedDateTime;
-	private Staff verifiedStaff;
+	private long verifiedStaffId;
+	@NotNull
 	private boolean completed;
 	private DateTime completedDateTime;
-	private Staff completedStaff;
-	private Impact impact;
-	
+	private long completedStaffId;
+	@NotNull
+	private long impactId;
+
 	public Intervention() {
 
 	}
-	
+
 	/**
 	 * @return the id
 	 */
@@ -31,80 +38,71 @@ public class Intervention {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return the patient
+	 * @return the patientId
 	 */
-	public Patient getPatient() {
-		return patient;
+	public long getPatientId() {
+		return patientId;
 	}
 
 	/**
-	 * @param patient the patient to set
+	 * @param patientId
+	 *            the patientId to set
 	 */
-	public void setPatient(Patient patient) {
-		this.patient = patient;
+	public void setPatientId(long patientId) {
+		this.patientId = patientId;
 	}
 
 	/**
-	 * @return the staff
+	 * @return the wardId
 	 */
-	public Staff getStaff() {
-		return staff;
+	public long getWardId() {
+		return wardId;
 	}
 
 	/**
-	 * @param staff the staff to set
+	 * @param wardId
+	 *            the wardId to set
 	 */
-	public void setStaff(Staff staff) {
-		this.staff = staff;
+	public void setWardId(long wardId) {
+		this.wardId = wardId;
 	}
 
 	/**
-	 * @return the details
+	 * @return the staffId
 	 */
-	public InterventionDetail[] getDetails() {
-		return details;
+	public long getStaffId() {
+		return staffId;
 	}
 
 	/**
-	 * @param details the details to set
+	 * @param staffId
+	 *            the staffId to set
 	 */
-	public void setDetails(InterventionDetail[] details) {
-		this.details = details;
+	public void setStaffId(long staffId) {
+		this.staffId = staffId;
 	}
 
 	/**
-	 * @return the actions
+	 * @return the dateTime
 	 */
-	public InterventionAction[] getActions() {
-		return actions;
+	public DateTime getDateTime() {
+		return dateTime;
 	}
 
 	/**
-	 * @param actions the actions to set
+	 * @param dateTime
+	 *            the dateTime to set
 	 */
-	public void setActions(InterventionAction[] actions) {
-		this.actions = actions;
-	}
-
-	/**
-	 * @return the outcomes
-	 */
-	public InterventionOutcome[] getOutcomes() {
-		return outcomes;
-	}
-
-	/**
-	 * @param outcomes the outcomes to set
-	 */
-	public void setOutcomes(InterventionOutcome[] outcomes) {
-		this.outcomes = outcomes;
+	public void setDateTime(DateTime dateTime) {
+		this.dateTime = dateTime;
 	}
 
 	/**
@@ -115,7 +113,8 @@ public class Intervention {
 	}
 
 	/**
-	 * @param verified the verified to set
+	 * @param verified
+	 *            the verified to set
 	 */
 	public void setVerified(boolean verified) {
 		this.verified = verified;
@@ -129,24 +128,26 @@ public class Intervention {
 	}
 
 	/**
-	 * @param verifiedDateTime the verifiedDateTime to set
+	 * @param verifiedDateTime
+	 *            the verifiedDateTime to set
 	 */
 	public void setVerifiedDateTime(DateTime verifiedDateTime) {
 		this.verifiedDateTime = verifiedDateTime;
 	}
 
 	/**
-	 * @return the verifiedStaff
+	 * @return the verifiedStaffId
 	 */
-	public Staff getVerifiedStaff() {
-		return verifiedStaff;
+	public long getVerifiedStaffId() {
+		return verifiedStaffId;
 	}
 
 	/**
-	 * @param verifiedStaff the verifiedStaff to set
+	 * @param verifiedStaffId
+	 *            the verifiedStaffId to set
 	 */
-	public void setVerifiedStaff(Staff verifiedStaff) {
-		this.verifiedStaff = verifiedStaff;
+	public void setVerifiedStaffId(long verifiedStaffId) {
+		this.verifiedStaffId = verifiedStaffId;
 	}
 
 	/**
@@ -157,7 +158,8 @@ public class Intervention {
 	}
 
 	/**
-	 * @param completed the completed to set
+	 * @param completed
+	 *            the completed to set
 	 */
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
@@ -171,39 +173,43 @@ public class Intervention {
 	}
 
 	/**
-	 * @param completedDateTime the completedDateTime to set
+	 * @param completedDateTime
+	 *            the completedDateTime to set
 	 */
 	public void setCompletedDateTime(DateTime completedDateTime) {
 		this.completedDateTime = completedDateTime;
 	}
 
 	/**
-	 * @return the completedStaff
+	 * @return the completedStaffId
 	 */
-	public Staff getCompletedStaff() {
-		return completedStaff;
+	public long getCompletedStaffId() {
+		return completedStaffId;
 	}
 
 	/**
-	 * @param completedStaff the completedStaff to set
+	 * @param completedStaffId
+	 *            the completedStaffId to set
 	 */
-	public void setCompletedStaff(Staff completedStaff) {
-		this.completedStaff = completedStaff;
+	public void setCompletedStaffId(long completedStaffId) {
+		this.completedStaffId = completedStaffId;
 	}
 
 	/**
-	 * @return the impact
+	 * @return the impactId
 	 */
-	public Impact getImpact() {
-		return impact;
+	public long getImpactId() {
+		return impactId;
 	}
 
 	/**
-	 * @param impact the impact to set
+	 * @param impactId
+	 *            the impactId to set
 	 */
-	public void setImpact(Impact impact) {
-		this.impact = impact;
+	public void setImpactId(long impactId) {
+		this.impactId = impactId;
 	}
+
+	
 
 }
-
