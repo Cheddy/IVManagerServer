@@ -1,14 +1,13 @@
 package net.cheddy.ivmanager.model;
 
 
-
 public class InterventionDetail {
-	
+
 	private long id;
 	private long interventionId;
 	private String description;
 	private String detail;
-	
+
 	public InterventionDetail() {
 	}
 
@@ -67,5 +66,5 @@ public class InterventionDetail {
 	public void setDetail(String detail) {
 		this.detail = detail;
 	}
-	
+
 }

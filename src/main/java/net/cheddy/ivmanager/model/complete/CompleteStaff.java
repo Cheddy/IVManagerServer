@@ -1,20 +1,17 @@
 package net.cheddy.ivmanager.model.complete;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import net.cheddy.ivmanager.auth.AuthUtils;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.StaffRank;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class CompleteStaff {
 
@@ -82,8 +79,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -97,8 +93,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param username
-	 *            the username to set
+	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -112,8 +107,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param surname
-	 *            the surname to set
+	 * @param surname the surname to set
 	 */
 	public void setSurname(String surname) {
 		this.surname = surname;
@@ -127,8 +121,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param othernames
-	 *            the othernames to set
+	 * @param othernames the othernames to set
 	 */
 	public void setOthernames(String othernames) {
 		this.othernames = othernames;
@@ -143,8 +136,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param passwordHash
-	 *            the passwordHash to set
+	 * @param passwordHash the passwordHash to set
 	 */
 	@JsonProperty
 	public void setPasswordHash(String passwordHash) {
@@ -159,8 +151,7 @@ public class CompleteStaff {
 	}
 
 	/**
-	 * @param rank
-	 *            the rank to set
+	 * @param rank the rank to set
 	 */
 	public void setRank(StaffRank rank) {
 		this.rank = rank;

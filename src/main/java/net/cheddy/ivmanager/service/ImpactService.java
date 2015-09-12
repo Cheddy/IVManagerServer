@@ -1,31 +1,20 @@
 package net.cheddy.ivmanager.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.auth.Auth;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.function.Consumer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Impact;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 @Path("/impact")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,21 +34,18 @@ public class ImpactService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Impact impact = mapper.readValue(data, Impact.class);
-			if (impact.getId() == -1)
+			if (impact.getId() == -1) {
 				getDao().insertImpact(impact);
-			else
+			} else {
 				getDao().updateImpact(impact);
+			}
 			return Response.accepted().build();
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(Status.NOT_ACCEPTABLE).build();
 	}
-	
+
 	@POST
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -69,27 +55,19 @@ public class ImpactService {
 			Impact impact = mapper.readValue(data, Impact.class);
 			getDao().deleteImpact(impact);
 			return Response.accepted().build();
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(Status.NOT_ACCEPTABLE).build();
 	}
-	
+
 	@GET
 	@Path("/all")
 	public Impact[] getAllImpacts(@Auth UserSession session) {
 		Iterator<Impact> it = getDao().allImpacts();
-		final ArrayList<Impact> impacts = new ArrayList<Impact>();
-		it.forEachRemaining(new Consumer<Impact>() {
-			public void accept(Impact t) {
-				impacts.add(t);
-			}
-		});
-		return (Impact[]) impacts.toArray(new Impact[impacts.size()]);
+		final ArrayList<Impact> impacts = new ArrayList<>();
+		it.forEachRemaining(t -> impacts.add(t));
+		return impacts.toArray(new Impact[impacts.size()]);
 	}
 
 	/**

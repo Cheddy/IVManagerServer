@@ -7,7 +7,7 @@ public class Hospital {
 	private long id = -1;
 	@NotEmpty
 	private String name;
-	
+
 	public Hospital() {
 	}
 
@@ -38,5 +38,5 @@ public class Hospital {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 }

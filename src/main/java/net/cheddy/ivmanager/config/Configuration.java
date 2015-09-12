@@ -5,6 +5,7 @@ import io.dropwizard.db.DataSourceFactory;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+
 public class Configuration extends io.dropwizard.Configuration {
 
 	@Valid
@@ -14,19 +15,22 @@ public class Configuration extends io.dropwizard.Configuration {
 		public String getDriverClass() {
 			return "com.mysql.jdbc.Driver";
 		}
+
 		public String getUrl() {
 			return "jdbc:mysql://localhost:3306/IVManager";
-		};
+		}
+
 		public String getUser() {
 			return "root";
-		};
+		}
+
 		public String getPassword() {
 			return "123eRTy789!)";
-		};
+		}
 	};
 
 	private String cacheBuilderSpec = "maximumSize=10000, expireAfterAccess=10m";
-	
+
 	/**
 	 * @return the database
 	 */
@@ -35,8 +39,7 @@ public class Configuration extends io.dropwizard.Configuration {
 	}
 
 	/**
-	 * @param database
-	 *            the database to set
+	 * @param database the database to set
 	 */
 	public void setDatabase(DataSourceFactory database) {
 		this.database = database;
@@ -57,6 +60,4 @@ public class Configuration extends io.dropwizard.Configuration {
 	}
 
 
-
-	
 }

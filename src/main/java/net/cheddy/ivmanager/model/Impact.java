@@ -5,7 +5,7 @@ public class Impact {
 
 	long id;
 	String name;
-	
+
 	public Impact() {
 	}
 
@@ -36,5 +36,5 @@ public class Impact {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 }

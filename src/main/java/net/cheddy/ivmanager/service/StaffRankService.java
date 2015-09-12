@@ -1,30 +1,20 @@
 package net.cheddy.ivmanager.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.function.Consumer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.dropwizard.auth.Auth;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.StaffRank;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 @Path("/staffrank")
 @Produces(MediaType.APPLICATION_JSON)
@@ -44,21 +34,18 @@ public class StaffRankService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			StaffRank staffRank = mapper.readValue(data, StaffRank.class);
-			if (staffRank.getId() == -1)
+			if (staffRank.getId() == -1) {
 				getDao().insertStaffRank(staffRank);
-			else
+			} else {
 				getDao().updateStaffRank(staffRank);
+			}
 			return Response.accepted().build();
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(Status.NOT_ACCEPTABLE).build();
 	}
-	
+
 	@POST
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -68,27 +55,19 @@ public class StaffRankService {
 			StaffRank staffRank = mapper.readValue(data, StaffRank.class);
 			getDao().deleteStaffRank(staffRank);
 			return Response.accepted().build();
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(Status.NOT_ACCEPTABLE).build();
 	}
-	
+
 	@GET
 	@Path("/all")
 	public StaffRank[] getAllStaffRanks(/*@Auth UserSession session*/) {
 		Iterator<StaffRank> it = getDao().allStaffRanks();
-		final ArrayList<StaffRank> staffRanks = new ArrayList<StaffRank>();
-		it.forEachRemaining(new Consumer<StaffRank>() {
-			public void accept(StaffRank t) {
-				staffRanks.add(t);
-			}
-		});
-		return (StaffRank[]) staffRanks.toArray(new StaffRank[staffRanks.size()]);
+		final ArrayList<StaffRank> staffRanks = new ArrayList<>();
+		it.forEachRemaining(t -> staffRanks.add(t));
+		return staffRanks.toArray(new StaffRank[staffRanks.size()]);
 	}
 
 	/**

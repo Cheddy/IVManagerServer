@@ -3,12 +3,12 @@ package net.cheddy.ivmanager.auth;
 import net.cheddy.ivmanager.model.complete.CompleteStaff;
 
 public class UserSession {
-  
+
 	private CompleteStaff staff;
 
-    public UserSession(CompleteStaff staff) {
-    	this.staff = staff;
-    }
+	public UserSession(CompleteStaff staff) {
+		this.staff = staff;
+	}
 
 	/**
 	 * @return the staff
@@ -23,5 +23,5 @@ public class UserSession {
 	public void setStaff(CompleteStaff staff) {
 		this.staff = staff;
 	}
-	
+
 }

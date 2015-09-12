@@ -4,17 +4,36 @@ import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Hospital;
 import net.cheddy.ivmanager.model.Ward;
 
+
 public class CompleteWard {
 
 	private long id;
 	private Hospital hospital;
 	private String name;
-	
+
+	public CompleteWard() {
+
+	}
+
 	public CompleteWard(DAO dao, long id) {
 		this.id = id;
 		Ward ward = dao.wardForId(id);
 		this.setHospital(dao.hospitalForId(ward.getHospitalId()));
 		this.name = ward.getName();
+	}
+
+	public CompleteWard(DAO dao, Ward ward) {
+		this.id = ward.getId();
+		this.hospital = dao.hospitalForId(ward.getHospitalId());
+		this.name = ward.getName();
+	}
+
+	public Ward toWard() {
+		Ward ward = new Ward();
+		ward.setId(getId());
+		ward.setHospitalId(getHospital().getId());
+		ward.setName(getName());
+		return ward;
 	}
 
 	/**

@@ -1,8 +1,8 @@
 package net.cheddy.ivmanager.model;
 
-import javax.validation.constraints.NotNull;
-
 import org.joda.time.DateTime;
+
+import javax.validation.constraints.NotNull;
 
 public class Intervention {
 
@@ -38,8 +38,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -53,8 +52,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param patientId
-	 *            the patientId to set
+	 * @param patientId the patientId to set
 	 */
 	public void setPatientId(long patientId) {
 		this.patientId = patientId;
@@ -68,8 +66,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param wardId
-	 *            the wardId to set
+	 * @param wardId the wardId to set
 	 */
 	public void setWardId(long wardId) {
 		this.wardId = wardId;
@@ -83,8 +80,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param staffId
-	 *            the staffId to set
+	 * @param staffId the staffId to set
 	 */
 	public void setStaffId(long staffId) {
 		this.staffId = staffId;
@@ -98,8 +94,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param dateTime
-	 *            the dateTime to set
+	 * @param dateTime the dateTime to set
 	 */
 	public void setDateTime(DateTime dateTime) {
 		this.dateTime = dateTime;
@@ -113,8 +108,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param verified
-	 *            the verified to set
+	 * @param verified the verified to set
 	 */
 	public void setVerified(boolean verified) {
 		this.verified = verified;
@@ -128,8 +122,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param verifiedDateTime
-	 *            the verifiedDateTime to set
+	 * @param verifiedDateTime the verifiedDateTime to set
 	 */
 	public void setVerifiedDateTime(DateTime verifiedDateTime) {
 		this.verifiedDateTime = verifiedDateTime;
@@ -143,8 +136,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param verifiedStaffId
-	 *            the verifiedStaffId to set
+	 * @param verifiedStaffId the verifiedStaffId to set
 	 */
 	public void setVerifiedStaffId(long verifiedStaffId) {
 		this.verifiedStaffId = verifiedStaffId;
@@ -158,8 +150,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param completed
-	 *            the completed to set
+	 * @param completed the completed to set
 	 */
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
@@ -173,8 +164,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param completedDateTime
-	 *            the completedDateTime to set
+	 * @param completedDateTime the completedDateTime to set
 	 */
 	public void setCompletedDateTime(DateTime completedDateTime) {
 		this.completedDateTime = completedDateTime;
@@ -188,8 +178,7 @@ public class Intervention {
 	}
 
 	/**
-	 * @param completedStaffId
-	 *            the completedStaffId to set
+	 * @param completedStaffId the completedStaffId to set
 	 */
 	public void setCompletedStaffId(long completedStaffId) {
 		this.completedStaffId = completedStaffId;
@@ -203,13 +192,11 @@ public class Intervention {
 	}
 
 	/**
-	 * @param impactId
-	 *            the impactId to set
+	 * @param impactId the impactId to set
 	 */
 	public void setImpactId(long impactId) {
 		this.impactId = impactId;
 	}
 
-	
 
 }

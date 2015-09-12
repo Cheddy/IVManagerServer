@@ -2,13 +2,14 @@ package net.cheddy.ivmanager.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+
 public class StaffRank {
 
 	private long id = -1;
 	@NotEmpty
 	private String name;
 	private int permissions = 0;
-	
+
 	public StaffRank() {
 	}
 

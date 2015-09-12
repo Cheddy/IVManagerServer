@@ -6,7 +6,7 @@ public class Ward {
 	private long id;
 	private long hospitalId;
 	private String name;
-	
+
 	public Ward() {
 
 	}
@@ -52,7 +52,6 @@ public class Ward {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
 
 }
