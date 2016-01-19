@@ -2,6 +2,7 @@ package net.cheddy.ivmanager.model.mapper;
 
 import net.cheddy.ivmanager.model.Intervention;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
@@ -17,11 +18,17 @@ public class InterventionMapper implements ResultSetMapper<Intervention> {
 		Intervention intervention = new Intervention();
 		intervention.setCompleted(r.getBoolean("completed"));
 		intervention.setVerified(r.getBoolean("verified"));
-		intervention.setCompletedDateTime(r.getObject("completedDateTime", DateTime.class));
-		intervention.setVerifiedDateTime(r.getObject("verifiedDateTime", DateTime.class));
-		intervention.setCompletedStaffId(r.getLong("completedStaffId"));
-		intervention.setVerifiedStaffId(r.getLong("verifiedStaffId"));
-		intervention.setDateTime(r.getObject("dateTime", DateTime.class));
+		if(intervention.isCompleted()) {
+			intervention.setCompletedStaffId(r.getLong("completedStaffId"));
+			intervention.setCompletedDateTime(DateTime.parse(r.getString("completedDateTime"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S")));
+		}
+		if(intervention.isVerified()) {
+			intervention.setVerifiedDateTime(DateTime.parse(r.getString("verifiedDateTime"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S")));
+			intervention.setVerifiedStaffId(r.getLong("verifiedStaffId"));
+		}
+
+		intervention.setDateTime(DateTime.parse(r.getString("dateTime"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S")));
+
 		intervention.setId(r.getLong("id"));
 		intervention.setImpactId(r.getLong("impactId"));
 		intervention.setPatientId(r.getLong("patientId"));

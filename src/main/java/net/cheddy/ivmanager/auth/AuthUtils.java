@@ -7,11 +7,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Random;
 
 public class AuthUtils {
 
@@ -21,12 +22,16 @@ public class AuthUtils {
 	private AuthUtils() {
 	}
 
-	private static final Random random = new Random();
-
 	public static byte[] randomSalt() {
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-		return salt;
+		try {
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			byte[] salt = new byte[16];
+			sr.nextBytes(salt);
+			return salt;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return new byte[16];
 	}
 
 	public static String hash(Serializable record) {
@@ -54,5 +59,17 @@ public class AuthUtils {
 		return f.generateSecret(spec).getEncoded();
 	}
 
+	private static String toHex(byte[] array) throws NoSuchAlgorithmException
+	{
+		BigInteger bi = new BigInteger(1, array);
+		String hex = bi.toString(16);
+		int paddingLength = (array.length * 2) - hex.length();
+		if(paddingLength > 0)
+		{
+			return String.format("%0"  +paddingLength + "d", 0) + hex;
+		}else{
+			return hex;
+		}
+	}
 
 }

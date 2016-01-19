@@ -1,6 +1,8 @@
 package net.cheddy.ivmanager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import io.dropwizard.auth.Auth;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
@@ -30,6 +32,8 @@ public class InterventionActionService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveInterventionAction(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		try {
 			InterventionAction interventionAction = mapper.readValue(data, InterventionAction.class);
 			if (interventionAction.getId() == -1) {
@@ -49,6 +53,8 @@ public class InterventionActionService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteInterventionAction(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		try {
 			InterventionAction interventionAction = mapper.readValue(data, InterventionAction.class);
 			getDao().deleteInterventionAction(interventionAction);

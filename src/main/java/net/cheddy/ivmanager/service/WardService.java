@@ -37,6 +37,9 @@ public class WardService {
 		try {
 			CompleteWard completeWard = mapper.readValue(data, CompleteWard.class);
 			Ward staff = completeWard.toWard();
+			if(staff == null){
+				return Response.status(Status.NOT_ACCEPTABLE).tag("Hospital not present").build();
+			}
 			if (staff.getId() == -1) {
 				getDao().insertWard(staff);
 			} else {

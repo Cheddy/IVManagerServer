@@ -29,6 +29,8 @@ public class Configuration extends io.dropwizard.Configuration {
 		}
 	};
 
+	@Valid
+	@NotNull
 	private String cacheBuilderSpec = "maximumSize=10000, expireAfterAccess=10m";
 
 	/**

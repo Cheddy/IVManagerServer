@@ -29,6 +29,8 @@ public class CompleteWard {
 	}
 
 	public Ward toWard() {
+		if(getHospital() == null)
+			return null;
 		Ward ward = new Ward();
 		ward.setId(getId());
 		ward.setHospitalId(getHospital().getId());

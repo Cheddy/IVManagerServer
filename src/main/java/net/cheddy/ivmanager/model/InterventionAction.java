@@ -1,5 +1,8 @@
 package net.cheddy.ivmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import net.cheddy.ivmanager.model.mapper.DateTimeSerialiser;
 import org.joda.time.DateTime;
 
 
@@ -9,6 +12,7 @@ public class InterventionAction {
 	private long interventionId;
 	private String description;
 	private String detail;
+	@JsonSerialize(using=DateTimeSerialiser.class)
 	private DateTime dateTime;
 
 	public InterventionAction() {
@@ -73,6 +77,7 @@ public class InterventionAction {
 	/**
 	 * @return the datetime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getDateTime() {
 		return dateTime;
 	}
@@ -80,6 +85,7 @@ public class InterventionAction {
 	/**
 	 * @param datetime the datetime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setDateTime(DateTime datetime) {
 		this.dateTime = datetime;
 	}

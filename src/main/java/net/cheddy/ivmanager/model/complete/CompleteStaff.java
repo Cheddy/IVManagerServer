@@ -2,6 +2,7 @@ package net.cheddy.ivmanager.model.complete;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.cheddy.ivmanager.Server;
 import net.cheddy.ivmanager.auth.AuthUtils;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Staff;

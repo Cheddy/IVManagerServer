@@ -15,7 +15,7 @@ public class StaffRankMapper implements ResultSetMapper<StaffRank> {
 	public StaffRank map(int index, ResultSet r, StatementContext ctx) throws SQLException {
 		StaffRank staffRank = new StaffRank();
 		staffRank.setId(r.getLong("id"));
-		staffRank.setPermissions(r.getInt("permissions"));
+		staffRank.setPermissions(r.getLong("permissions"));
 		staffRank.setName(r.getString("name"));
 		return staffRank;
 	}

@@ -2,10 +2,7 @@ package net.cheddy.ivmanager.database;
 
 import net.cheddy.ivmanager.model.*;
 import net.cheddy.ivmanager.model.mapper.*;
-import org.skife.jdbi.v2.sqlobject.Bind;
-import org.skife.jdbi.v2.sqlobject.BindBean;
-import org.skife.jdbi.v2.sqlobject.SqlQuery;
-import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.*;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
 import java.util.Iterator;
@@ -33,10 +30,10 @@ public interface DAO {
 	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Interventions (id BIGINT NOT NULL AUTO_INCREMENT, patientId BIGINT NOT NULL, wardId BIGINT NOT NULL, staffId BIGINT NOT NULL, dateTime DATETIME NOT NULL, verified BOOL NOT NULL, verifiedDateTime DATETIME, verifiedStaffId BIGINT, completed BOOL NOT NULL, completedDateTime DATETIME, completedStaffId BIGINT, impactId BIGINT NOT NULL, PRIMARY KEY (id))")
 	void createInterventionTable();
 
-	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Staff (id BIGINT NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL UNIQUE, surname VARCHAR(255) NOT NULL, othernames VARCHAR(255) NOT NULL, passwordHash VARCHAR(32) NOT NULL, passwordSalt VARCHAR(32) NOT NULL, rankId BIGINT NOT NULL, PRIMARY KEY (id))")
+	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Staff (id BIGINT NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL UNIQUE, surname VARCHAR(255) NOT NULL, othernames VARCHAR(255) NOT NULL, passwordHash VARCHAR(32) CHARACTER  SET utf8 COLLATE utf8_general_ci NOT NULL, passwordSalt VARCHAR(32) CHARACTER  SET utf8 COLLATE utf8_general_ci NOT NULL, rankId BIGINT NOT NULL, PRIMARY KEY (id))")
 	void createStaffTable();
 
-	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS StaffRanks (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, permissions INT NOT NULL, PRIMARY KEY (id))")
+	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS StaffRanks (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, permissions BIGINT NOT NULL, PRIMARY KEY (id))")
 	void createStaffRanksTable();
 
 	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Patients (id BIGINT NOT NULL AUTO_INCREMENT, rtx BIGINT NOT NULL UNIQUE, surname VARCHAR(1024) NOT NULL, othernames VARCHAR(1024) NOT NULL, dob DATE NOT NULL, PRIMARY KEY (id))")
@@ -60,31 +57,31 @@ public interface DAO {
 	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS InterventionDetails (id BIGINT NOT NULL AUTO_INCREMENT, interventionId BIGINT NOT NULL, description VARCHAR(1024) NOT NULL, detail TEXT, PRIMARY KEY (id))")
 	void createDetailsTable();
 
-	@SqlQuery("SELECT * FROM Interventions")
+	@SqlQuery("SELECT * FROM Interventions ORDER BY dateTime")
 	Iterator<Intervention> allInterventions();
 
 	@SqlQuery("SELECT * FROM Interventions WHERE id = :id")
 	Intervention interventionForId(@Bind("id") long id);
 
-	@SqlQuery("SELECT * FROM Patients")
+	@SqlQuery("SELECT * FROM Patients ORDER BY rtx")
 	Iterator<Patient> allPatients();
 
 	@SqlQuery("SELECT * FROM Patients WHERE id = :id")
 	Patient patientForId(@Bind("id") long id);
 
-	@SqlQuery("SELECT * FROM Hospitals")
+	@SqlQuery("SELECT * FROM Hospitals ORDER BY name")
 	Iterator<Hospital> allHospitals();
 
 	@SqlQuery("SELECT * FROM Hospitals WHERE id = :id")
 	Hospital hospitalForId(@Bind("id") long id);
 
-	@SqlQuery("SELECT * FROM Wards")
+	@SqlQuery("SELECT * FROM Wards ORDER BY name")
 	Iterator<Ward> allWards();
 
 	@SqlQuery("SELECT * FROM Wards WHERE id = :id")
 	Ward wardForId(@Bind("id") long id);
 
-	@SqlQuery("SELECT * FROM Staff")
+	@SqlQuery("SELECT * FROM Staff ORDER BY surname")
 	Iterator<Staff> allStaff();
 
 	@SqlQuery("SELECT * FROM Staff WHERE id = :id")
@@ -93,29 +90,30 @@ public interface DAO {
 	@SqlQuery("SELECT * FROM Staff WHERE username = :username")
 	Staff staffForUsername(@Bind("username") String username);
 
-	@SqlQuery("SELECT * FROM StaffRanks")
+	@SqlQuery("SELECT * FROM StaffRanks ORDER BY name")
 	Iterator<StaffRank> allStaffRanks();
 
 	@SqlQuery("SELECT * FROM StaffRanks WHERE id = :id")
 	StaffRank staffRankForId(@Bind("id") long id);
 
-	@SqlQuery("SELECT * FROM Impacts")
+	@SqlQuery("SELECT * FROM Impacts ORDER BY name")
 	Iterator<Impact> allImpacts();
 
 	@SqlQuery("SELECT * FROM Impacts WHERE id = :id")
 	Impact impactForId(@Bind("id") long id);
 
 	@SqlQuery("SELECT * FROM InterventionActions WHERE interventionId = :interventionId")
-	InterventionAction[] allActionsForId(@Bind("interventionId") long interventionId);
+	Iterator<InterventionAction> allActionsForId(@Bind("interventionId") long interventionId);
 
 	@SqlQuery("SELECT * FROM InterventionDetails WHERE interventionId = :interventionId")
-	InterventionDetail[] allDetailsForId(@Bind("interventionId") long interventionId);
+	Iterator<InterventionDetail> allDetailsForId(@Bind("interventionId") long interventionId);
 
 	@SqlQuery("SELECT * FROM InterventionOutcomes WHERE interventionId = :interventionId")
-	InterventionOutcome[] allOutcomesForId(@Bind("interventionId") long interventionId);
+	Iterator<InterventionOutcome> allOutcomesForId(@Bind("interventionId") long interventionId);
 
 	@SqlUpdate(value = "INSERT INTO Interventions VALUES (default, :patientId, :wardId, :staffId, :dateTime, :verified, :verifiedStaffId, :verifiedDateTime, :completed, :completedStaffId, :completedDateTime, :impactId)")
-	void insertIntervention(@BindBean Intervention intervention);
+	@GetGeneratedKeys
+	long insertIntervention(@BindBean Intervention intervention);
 
 	@SqlUpdate(value = "UPDATE Interventions SET patientId=:patientId, wardId=:wardId, staffId=staffId, dateTime=:dateTime, verified=:verified, verifiedStaffId=:verifiedStaffId, verifiedDateTime=:verifiedDateTime, completed=:completed, completedStaffId=:completedStaffId, completedDateTime=:completedDateTime, impactId=:impactId WHERE id=:id")
 	void updateIntervention(@BindBean Intervention intervention);
@@ -162,7 +160,7 @@ public interface DAO {
 	@SqlUpdate(value = "UPDATE InterventionDetails SET interventionId=:interventionId, description=:description,detail=:detail WHERE id=:id")
 	void updateInterventionDetail(@BindBean InterventionDetail interventionDetail);
 
-	@SqlUpdate(value = "INSERT INTO Staff VALUES (default, :username, :surname, :othernames, :passwordSalt, :passwordHash, :rankId)")
+	@SqlUpdate(value = "INSERT INTO Staff VALUES (default, :username, :surname, :othernames, :passwordHash, :passwordSalt, :rankId)")
 	void insertStaff(@BindBean Staff staff);
 
 	@SqlUpdate(value = "UPDATE Staff SET username=:username, surname=:surname, othernames=:othernames, passwordSalt=:passwordSalt, passwordHash=:passwordHash, rankId=:rankId WHERE id=:id")
@@ -200,6 +198,15 @@ public interface DAO {
 
 	@SqlUpdate(value = "DELETE FROM InterventionDetails WHERE id=:id")
 	void deleteInterventionDetail(@BindBean InterventionDetail interventionDetail);
+
+	@SqlUpdate(value = "DELETE FROM InterventionActions WHERE interventionId=:id")
+	void deleteAllInterventionActionsForIntervention(@BindBean Intervention intervention);
+
+	@SqlUpdate(value = "DELETE FROM InterventionDetails WHERE interventionId=:id")
+	void deleteAllInterventionDetailsForIntervention(@BindBean Intervention intervention);
+
+	@SqlUpdate(value = "DELETE FROM InterventionOutcomes WHERE interventionId=:id")
+	void deleteAllInterventionOutcomesForIntervention(@BindBean Intervention intervention);
 
 	@SqlUpdate(value = "DELETE FROM Patients WHERE id=:id")
 	void deletePatient(@BindBean Patient patient);

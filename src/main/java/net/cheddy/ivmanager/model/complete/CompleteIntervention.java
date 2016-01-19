@@ -1,23 +1,31 @@
 package net.cheddy.ivmanager.model.complete;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.*;
+import net.cheddy.ivmanager.model.mapper.DateTimeSerialiser;
 import org.joda.time.DateTime;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class CompleteIntervention {
 
-	private long id;
+	private long id = -1;
 	private Patient patient;
 	private CompleteWard ward;
 	private CompleteStaff staff;
+	@JsonSerialize(using=DateTimeSerialiser.class)
 	private DateTime dateTime;
-	private boolean verified;
+	private boolean verified = false;
+	@JsonSerialize(using=DateTimeSerialiser.class)
 	private DateTime verifiedDateTime;
 	private CompleteStaff verifiedStaff;
-	private boolean completed;
+	private boolean completed = false;
+	@JsonSerialize(using=DateTimeSerialiser.class)
 	private DateTime completedDateTime;
 	private CompleteStaff completedStaff;
 	private InterventionDetail[] details;
@@ -35,9 +43,6 @@ public class CompleteIntervention {
 	public CompleteIntervention(DAO dao, @Valid Intervention intervention) {
 		this.id = intervention.getId();
 		this.dateTime = intervention.getDateTime();
-		this.actions = dao.allActionsForId(id);
-		this.details = dao.allDetailsForId(id);
-		this.outcomes = dao.allOutcomesForId(id);
 		this.patient = dao.patientForId(intervention.getPatientId());
 		this.staff = new CompleteStaff(dao, intervention.getStaffId());
 		this.impact = dao.impactForId(intervention.getImpactId());
@@ -52,6 +57,48 @@ public class CompleteIntervention {
 			this.verified = true;
 			this.verifiedStaff = new CompleteStaff(dao, intervention.getVerifiedStaffId());
 		}
+
+		Iterator<InterventionDetail> itd = dao.allDetailsForId(this.id);
+		final ArrayList<InterventionDetail> details1 = new ArrayList<>();
+		itd.forEachRemaining(t -> details1.add(t));
+		this.details =  details1.toArray(new InterventionDetail[details1.size()]);
+
+		Iterator<InterventionAction> ita = dao.allActionsForId(this.id);
+		final ArrayList<InterventionAction> actions1 = new ArrayList<>();
+		ita.forEachRemaining(t -> actions1.add(t));
+		this.actions =  actions1.toArray(new InterventionAction[actions1.size()]);
+
+		Iterator<InterventionOutcome> ito = dao.allOutcomesForId(this.id);
+		final ArrayList<InterventionOutcome> outcomes1 = new ArrayList<>();
+		ito.forEachRemaining(t -> outcomes1.add(t));
+		this.outcomes =  outcomes1.toArray(new InterventionOutcome[outcomes1.size()]);
+	}
+
+	public Intervention toIntervention() {
+		Intervention intervention = new Intervention();
+		intervention.setCompleted(completed);
+		intervention.setVerified(verified);
+		if (completed) {
+			intervention.setCompletedDateTime(completedDateTime);
+			if (completedStaff != null)
+				intervention.setCompletedStaffId(completedStaff.getId());
+		}
+		if (verified) {
+			intervention.setVerifiedDateTime(verifiedDateTime);
+			if (verifiedStaff != null)
+				intervention.setVerifiedStaffId(verifiedStaff.getId());
+		}
+		intervention.setDateTime(dateTime);
+		intervention.setId(id);
+		if (staff != null)
+			intervention.setStaffId(staff.getId());
+		if(impact != null)
+			intervention.setImpactId(impact.getId());
+		if(patient != null)
+			intervention.setPatientId(patient.getId());
+		if(ward != null)
+			intervention.setWardId(ward.getId());
+		return intervention;
 	}
 
 	/**
@@ -113,6 +160,7 @@ public class CompleteIntervention {
 	/**
 	 * @return the dateTime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getDateTime() {
 		return dateTime;
 	}
@@ -120,6 +168,7 @@ public class CompleteIntervention {
 	/**
 	 * @param dateTime the dateTime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setDateTime(DateTime dateTime) {
 		this.dateTime = dateTime;
 	}
@@ -141,6 +190,7 @@ public class CompleteIntervention {
 	/**
 	 * @return the verifiedDateTime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getVerifiedDateTime() {
 		return verifiedDateTime;
 	}
@@ -148,6 +198,7 @@ public class CompleteIntervention {
 	/**
 	 * @param verifiedDateTime the verifiedDateTime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setVerifiedDateTime(DateTime verifiedDateTime) {
 		this.verifiedDateTime = verifiedDateTime;
 	}
@@ -183,6 +234,7 @@ public class CompleteIntervention {
 	/**
 	 * @return the completedDateTime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getCompletedDateTime() {
 		return completedDateTime;
 	}
@@ -190,6 +242,7 @@ public class CompleteIntervention {
 	/**
 	 * @param completedDateTime the completedDateTime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setCompletedDateTime(DateTime completedDateTime) {
 		this.completedDateTime = completedDateTime;
 	}

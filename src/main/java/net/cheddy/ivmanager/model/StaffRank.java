@@ -8,7 +8,7 @@ public class StaffRank {
 	private long id = -1;
 	@NotEmpty
 	private String name;
-	private int permissions = 0;
+	private long permissions = 0;
 
 	public StaffRank() {
 	}
@@ -44,14 +44,14 @@ public class StaffRank {
 	/**
 	 * @return the permissions
 	 */
-	public int getPermissions() {
+	public long getPermissions() {
 		return permissions;
 	}
 
 	/**
 	 * @param permissions the permissions to set
 	 */
-	public void setPermissions(int permissions) {
+	public void setPermissions(long permissions) {
 		this.permissions = permissions;
 	}
 

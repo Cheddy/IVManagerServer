@@ -1,12 +1,16 @@
 package net.cheddy.ivmanager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
 import io.dropwizard.auth.Auth;
+import io.dropwizard.auth.basic.BasicCredentials;
+import net.cheddy.ivmanager.Server;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.complete.CompleteStaff;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -39,6 +43,14 @@ public class StaffService {
 				return Response.status(Status.NOT_ACCEPTABLE).build();
 			}
 			Staff staff = completeStaff.toStaff(dao);
+			if(completeStaff.getPasswordHash() != null && !completeStaff.getPasswordHash().isEmpty() && !completeStaff.getPasswordHash().equals(session.getStaff().getPasswordHash())){
+				Server.getAuthenticator().invalidateAll(new Predicate<BasicCredentials>(){
+					@Override
+					public boolean apply(@Nullable BasicCredentials input) {
+						return input == null || input.getUsername().equalsIgnoreCase(session.getStaff().getUsername());
+					}
+				});
+			}
 			if (staff.getId() == -1) {
 				getDao().insertStaff(staff);
 			} else {
@@ -85,4 +97,5 @@ public class StaffService {
 	public DAO getDao() {
 		return dao;
 	}
+
 }

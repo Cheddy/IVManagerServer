@@ -1,12 +1,13 @@
 package net.cheddy.ivmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.NotNull;
 
 public class Intervention {
 
-	private long id;
+	private long id = -1;
 	@NotNull
 	private long patientId;
 	@NotNull
@@ -117,6 +118,7 @@ public class Intervention {
 	/**
 	 * @return the verifiedDateTime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getVerifiedDateTime() {
 		return verifiedDateTime;
 	}
@@ -124,6 +126,7 @@ public class Intervention {
 	/**
 	 * @param verifiedDateTime the verifiedDateTime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setVerifiedDateTime(DateTime verifiedDateTime) {
 		this.verifiedDateTime = verifiedDateTime;
 	}
@@ -159,6 +162,7 @@ public class Intervention {
 	/**
 	 * @return the completedDateTime
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public DateTime getCompletedDateTime() {
 		return completedDateTime;
 	}
@@ -166,6 +170,7 @@ public class Intervention {
 	/**
 	 * @param completedDateTime the completedDateTime to set
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setCompletedDateTime(DateTime completedDateTime) {
 		this.completedDateTime = completedDateTime;
 	}

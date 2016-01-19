@@ -2,6 +2,7 @@ package net.cheddy.ivmanager.model.mapper;
 
 import net.cheddy.ivmanager.model.InterventionAction;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
@@ -19,7 +20,7 @@ public class InterventionActionMapper implements ResultSetMapper<InterventionAct
 		interventionAction.setInterventionId(r.getLong("interventionId"));
 		interventionAction.setDescription(r.getString("description"));
 		interventionAction.setDetail(r.getString("detail"));
-		interventionAction.setDateTime(r.getObject("dateTime", DateTime.class));
+		interventionAction.setDateTime(DateTime.parse(r.getString("dateTime"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.S")));
 		return interventionAction;
 	}
 }

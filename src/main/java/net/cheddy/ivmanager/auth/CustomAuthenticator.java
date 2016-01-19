@@ -34,7 +34,6 @@ public class CustomAuthenticator implements Authenticator<BasicCredentials, User
 				}
 			}
 		}
-
 		return Optional.absent();
 	}
 

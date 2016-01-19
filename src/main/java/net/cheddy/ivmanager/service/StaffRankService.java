@@ -30,7 +30,7 @@ public class StaffRankService {
 	@POST
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response saveStaffRank(@FormParam("data") String data, @Context HttpServletRequest request) {
+	public Response saveStaffRank(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			StaffRank staffRank = mapper.readValue(data, StaffRank.class);
@@ -40,10 +40,10 @@ public class StaffRankService {
 				getDao().updateStaffRank(staffRank);
 			}
 			return Response.accepted().build();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Response.status(Status.BAD_REQUEST).build();
 		}
-		return Response.status(Status.NOT_ACCEPTABLE).build();
+		return Response.status(Status.BAD_REQUEST).build();
 	}
 
 	@POST
@@ -55,15 +55,15 @@ public class StaffRankService {
 			StaffRank staffRank = mapper.readValue(data, StaffRank.class);
 			getDao().deleteStaffRank(staffRank);
 			return Response.accepted().build();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Response.status(Status.BAD_REQUEST).build();
 		}
-		return Response.status(Status.NOT_ACCEPTABLE).build();
+		return Response.status(Status.BAD_REQUEST).build();
 	}
 
 	@GET
 	@Path("/all")
-	public StaffRank[] getAllStaffRanks(/*@Auth UserSession session*/) {
+	public StaffRank[] getAllStaffRanks(@Auth UserSession session) {
 		Iterator<StaffRank> it = getDao().allStaffRanks();
 		final ArrayList<StaffRank> staffRanks = new ArrayList<>();
 		it.forEachRemaining(t -> staffRanks.add(t));
