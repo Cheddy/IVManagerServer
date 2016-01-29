@@ -31,12 +31,21 @@ public class ImpactService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveImpact(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canCreateImpacts() && !session.getStaff().canEditImpacts()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Impact impact = mapper.readValue(data, Impact.class);
 			if (impact.getId() == -1) {
+				if(!session.getStaff().canCreateImpacts()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().insertImpact(impact);
 			} else {
+				if(!session.getStaff().canEditImpacts()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().updateImpact(impact);
 			}
 			return Response.accepted().build();
@@ -50,6 +59,9 @@ public class ImpactService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteImpact(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canDeleteImpacts()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Impact impact = mapper.readValue(data, Impact.class);

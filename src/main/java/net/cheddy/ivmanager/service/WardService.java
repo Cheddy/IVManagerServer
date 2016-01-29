@@ -33,6 +33,9 @@ public class WardService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveWard(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canCreateWards() && !session.getStaff().canEditWards()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			CompleteWard completeWard = mapper.readValue(data, CompleteWard.class);
@@ -41,8 +44,14 @@ public class WardService {
 				return Response.status(Status.NOT_ACCEPTABLE).tag("Hospital not present").build();
 			}
 			if (staff.getId() == -1) {
+				if(!session.getStaff().canCreateWards()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().insertWard(staff);
 			} else {
+				if(!session.getStaff().canEditWards()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().updateWard(staff);
 			}
 			return Response.accepted().build();
@@ -56,6 +65,9 @@ public class WardService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteWard(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canDeleteWards()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			CompleteWard completeWard = mapper.readValue(data, CompleteWard.class);

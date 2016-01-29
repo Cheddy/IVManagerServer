@@ -31,12 +31,21 @@ public class HospitalService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveHospital(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canCreateHospitals() && !session.getStaff().canEditHospitals()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Hospital hospital = mapper.readValue(data, Hospital.class);
 			if (hospital.getId() == -1) {
+				if(!session.getStaff().canCreateHospitals()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().insertHospital(hospital);
 			} else {
+				if(!session.getStaff().canEditHospitals()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().updateHospital(hospital);
 			}
 			return Response.accepted().build();
@@ -50,6 +59,9 @@ public class HospitalService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteHospital(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canDeleteHospitals()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Hospital hospital = mapper.readValue(data, Hospital.class);

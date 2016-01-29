@@ -36,24 +36,38 @@ public class StaffService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveStaff(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canCreateStaff() && !session.getStaff().canEditStaff()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			CompleteStaff completeStaff = mapper.readValue(data, CompleteStaff.class);
+			if(completeStaff.getId() == -1){
+				if(!session.getStaff().canCreateStaff()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
+			}else{
+				if(!session.getStaff().canEditStaff()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
+			}
+
 			if (completeStaff.getId() == -1 && (completeStaff.getPasswordHash() == null || completeStaff.getPasswordHash().isEmpty())) {
 				return Response.status(Status.NOT_ACCEPTABLE).build();
 			}
+
 			Staff staff = completeStaff.toStaff(dao);
-			if(completeStaff.getPasswordHash() != null && !completeStaff.getPasswordHash().isEmpty() && !completeStaff.getPasswordHash().equals(session.getStaff().getPasswordHash())){
-				Server.getAuthenticator().invalidateAll(new Predicate<BasicCredentials>(){
-					@Override
-					public boolean apply(@Nullable BasicCredentials input) {
-						return input == null || input.getUsername().equalsIgnoreCase(session.getStaff().getUsername());
-					}
-				});
-			}
 			if (staff.getId() == -1) {
 				getDao().insertStaff(staff);
 			} else {
+				if(completeStaff.getPasswordHash() != null && !completeStaff.getPasswordHash().isEmpty() && !completeStaff.getPasswordHash().equals(session.getStaff().getPasswordHash())){
+					Server.getAuthenticator().invalidateAll(new Predicate<BasicCredentials>(){
+						@Override
+						public boolean apply(@Nullable BasicCredentials input) {
+							return input == null || input.getUsername().equalsIgnoreCase(session.getStaff().getUsername());
+						}
+					});
+				}
 				getDao().updateStaff(staff);
 			}
 			return Response.accepted().build();
@@ -67,6 +81,9 @@ public class StaffService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteStaff(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canDeleteStaff()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			CompleteStaff completeStaff = mapper.readValue(data, CompleteStaff.class);

@@ -1,6 +1,9 @@
 package net.cheddy.ivmanager.model;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class InterventionDetail {
 
 	private long id;
@@ -67,4 +70,16 @@ public class InterventionDetail {
 		this.detail = detail;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof InterventionDetail){
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				return mapper.writeValueAsString(this).equals(mapper.writeValueAsString(obj));
+			} catch (JsonProcessingException e) {
+				return false;
+			}
+		}
+		return false;
+	}
 }

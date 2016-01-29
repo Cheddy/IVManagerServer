@@ -8,7 +8,7 @@ public class StaffRank {
 	private long id = -1;
 	@NotEmpty
 	private String name;
-	private long permissions = 0;
+	private long permissions = 0L;
 
 	public StaffRank() {
 	}

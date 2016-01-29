@@ -31,12 +31,21 @@ public class PatientService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response savePatient(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canCreatePatients() && !session.getStaff().canEditPatients()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Patient patient = mapper.readValue(data, Patient.class);
 			if (patient.getId() == -1) {
+				if(!session.getStaff().canCreatePatients()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().insertPatient(patient);
 			} else {
+				if(!session.getStaff().canEditPatients()){
+					return Response.status(Status.UNAUTHORIZED).build();
+				}
 				getDao().updatePatient(patient);
 			}
 			return Response.accepted().build();
@@ -50,6 +59,9 @@ public class PatientService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deletePatient(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if(!session.getStaff().canDeletePatients()){
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			Patient patient = mapper.readValue(data, Patient.class);

@@ -53,6 +53,9 @@ public class InterventionService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response saveIntervention(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if (!session.getStaff().canCreateInterventions() && !session.getStaff().canEditInterventions()) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JodaModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -61,34 +64,133 @@ public class InterventionService {
 			Intervention intervention = completeIntervention.toIntervention();
 			long id = intervention.getId();
 			if (id == -1) {
+				if (!session.getStaff().canCreateInterventions()) {
+					return Response.status(Response.Status.UNAUTHORIZED).build();
+				}
+				intervention.setStaffId(session.getStaff().getId());
 				id = getDao().insertIntervention(intervention);
 			} else {
+				if (!session.getStaff().canEditInterventions()) {
+					return Response.status(Response.Status.UNAUTHORIZED).build();
+				}
+				Intervention original = getDao().interventionForId(id);
+				intervention.setStaffId(original.getStaffId());
 				getDao().updateIntervention(intervention);
 			}
+			boolean auth = true;
 
-			for(InterventionDetail detail : completeIntervention.getDetails()){
+			if (session.getStaff().canDeleteInterventionDetails()) {
+				Iterator<InterventionDetail> itd = dao.allDetailsForId(intervention.getId());
+				ArrayList<InterventionDetail> interventionDetails = new ArrayList<>();
+				itd.forEachRemaining(t -> interventionDetails.add(t));
+				for (InterventionDetail detail : interventionDetails) {
+					boolean contains = false;
+					for (InterventionDetail detail1 : completeIntervention.getDetails()) {
+						if (detail.getId() == detail1.getId()) {
+							contains = true;
+							break;
+						}
+					}
+					if (!contains) {
+						getDao().deleteInterventionDetail(detail);
+					}
+				}
+			} else {
+				auth = false;
+			}
+
+			for (InterventionDetail detail : completeIntervention.getDetails()) {
 				detail.setInterventionId(id);
-				if(detail.getId() == -1){
-					getDao().insertInterventionDetail(detail);
-				}else{
-					getDao().updateInterventionDetail(detail);
+				if (detail.getId() == -1) {
+					if (session.getStaff().canCreateInterventionDetails()) {
+						getDao().insertInterventionDetail(detail);
+					} else {
+						auth = false;
+					}
+				} else {
+					if (session.getStaff().canEditInterventionDetails()) {
+						getDao().updateInterventionDetail(detail);
+					} else {
+						auth = false;
+					}
 				}
 			}
-			for(InterventionAction action : completeIntervention.getActions()){
+
+			if (session.getStaff().canDeleteInterventionActions()) {
+				Iterator<InterventionAction> ita = dao.allActionsForId(intervention.getId());
+				ArrayList<InterventionAction> interventionActions = new ArrayList<>();
+				ita.forEachRemaining(t -> interventionActions.add(t));
+				for (InterventionAction action : interventionActions) {
+					boolean contains = false;
+					for (InterventionAction action1 : completeIntervention.getActions()) {
+						if (action.getId() == action1.getId()) {
+							contains = true;
+							break;
+						}
+					}
+					if (!contains) {
+						getDao().deleteInterventionAction(action);
+					}
+				}
+			} else {
+				auth = false;
+			}
+
+			for (InterventionAction action : completeIntervention.getActions()) {
 				action.setInterventionId(id);
-				if(action.getId() == -1){
-					getDao().insertInterventionAction(action);
-				}else{
-					getDao().updateInterventionAction(action);
+				if (action.getId() == -1) {
+					if (session.getStaff().canCreateInterventionActions()) {
+						getDao().insertInterventionAction(action);
+					} else {
+						auth = false;
+					}
+				} else {
+					if (session.getStaff().canEditInterventionActions()) {
+						getDao().updateInterventionAction(action);
+					} else {
+						auth = false;
+					}
 				}
 			}
-			for(InterventionOutcome outcome : completeIntervention.getOutcomes()){
-				outcome.setInterventionId(id);
-				if(outcome.getId() == -1){
-					getDao().insertInterventionOutcome(outcome);
-				}else{
-					getDao().updateInterventionOutcome(outcome);
+
+			if (session.getStaff().canDeleteInterventionOutcomes()) {
+				Iterator<InterventionOutcome> ito = dao.allOutcomesForId(intervention.getId());
+				ArrayList<InterventionOutcome> interventionOutcomes = new ArrayList<>();
+				ito.forEachRemaining(t -> interventionOutcomes.add(t));
+				for (InterventionOutcome outcome : interventionOutcomes) {
+					boolean contains = false;
+					for (InterventionOutcome outcome1 : completeIntervention.getOutcomes()) {
+						if (outcome.getId() == outcome1.getId()) {
+							contains = true;
+							break;
+						}
+					}
+					if (!contains) {
+						getDao().deleteInterventionOutcome(outcome);
+					}
 				}
+			} else {
+				auth = false;
+			}
+
+			for (InterventionOutcome outcome : completeIntervention.getOutcomes()) {
+				outcome.setInterventionId(id);
+				if (outcome.getId() == -1) {
+					if (session.getStaff().canCreateInterventionOutcomes()) {
+						getDao().insertInterventionOutcome(outcome);
+					} else {
+						auth = false;
+					}
+				} else {
+					if (session.getStaff().canEditInterventionOutcomes()) {
+						getDao().updateInterventionOutcome(outcome);
+					} else {
+						auth = false;
+					}
+				}
+			}
+			if (!auth) {
+				return Response.status(Response.Status.UNAUTHORIZED).build();
 			}
 			return Response.accepted().build();
 		} catch (IOException e) {
@@ -101,6 +203,9 @@ public class InterventionService {
 	@Path("/delete")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response deleteIntervention(@Auth UserSession session, @FormParam("data") String data, @Context HttpServletRequest request) {
+		if (!session.getStaff().canDeleteInterventions()) {
+			return Response.status(Response.Status.UNAUTHORIZED).build();
+		}
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JodaModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

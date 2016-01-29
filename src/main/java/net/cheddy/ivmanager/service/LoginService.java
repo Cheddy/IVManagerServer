@@ -24,7 +24,7 @@ public class LoginService {
 
 	@GET
 	public CompleteStaff login(@Auth UserSession session) {
-		return session.getStaff();
+		return new CompleteStaff(dao, getDao().staffForId(session.getStaff().getId()));
 	}
 
 	/**

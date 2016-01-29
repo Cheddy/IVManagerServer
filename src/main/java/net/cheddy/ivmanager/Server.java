@@ -70,9 +70,6 @@ public class Server extends Application<Configuration> {
 		environment.jersey().register(new WardService(dao));
 		environment.jersey().register(new StaffService(dao));
 		environment.jersey().register(new ImpactService(dao));
-		environment.jersey().register(new InterventionActionService(dao));
-		environment.jersey().register(new InterventionDetailService(dao));
-		environment.jersey().register(new InterventionOutcomeService(dao));
 	}
 
 	public static CachingAuthenticator<BasicCredentials, UserSession> getAuthenticator() {

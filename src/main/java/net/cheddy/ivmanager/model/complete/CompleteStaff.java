@@ -2,8 +2,8 @@ package net.cheddy.ivmanager.model.complete;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.cheddy.ivmanager.Server;
 import net.cheddy.ivmanager.auth.AuthUtils;
+import net.cheddy.ivmanager.config.Constants;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.StaffRank;
@@ -158,4 +158,123 @@ public class CompleteStaff {
 		this.rank = rank;
 	}
 
+	public boolean canCreateHospitals() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_HOSPITAL_PERMISSION) != 0;
+	}
+
+	public boolean canEditHospitals() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_HOSPITAL_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteHospitals() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_HOSPITAL_PERMISSION) != 0;
+	}
+
+	public boolean canCreateImpacts() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_IMPACT_PERMISSION) != 0;
+	}
+
+	public boolean canEditImpacts() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_IMPACT_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteImpacts() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_IMPACT_PERMISSION) != 0;
+	}
+
+	public boolean canCreateInterventions() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_INTERVENTION_PERMISSION) != 0;
+	}
+
+	public boolean canEditInterventions() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_INTERVENTION_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteInterventions() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_INTERVENTION_PERMISSION) != 0;
+	}
+
+	public boolean canCreatePatients() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_PATIENT_PERMISSION) != 0;
+	}
+
+	public boolean canEditPatients() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_PATIENT_PERMISSION) != 0;
+	}
+
+	public boolean canDeletePatients() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_PATIENT_PERMISSION) != 0;
+	}
+
+	public boolean canCreateStaffRanks() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_STAFF_RANK_PERMISSION) != 0;
+	}
+
+	public boolean canEditStaffRanks() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_STAFF_RANK_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteStaffRanks() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_STAFF_RANK_PERMISSION) != 0;
+	}
+
+	public boolean canCreateStaff() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_STAFF_PERMISSION) != 0;
+	}
+
+	public boolean canEditStaff() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_STAFF_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteStaff() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_STAFF_PERMISSION) != 0;
+	}
+
+	public boolean canCreateWards() {
+		return rank != null && (rank.getPermissions() & Constants.NEW_WARD_PERMISSION) != 0;
+	}
+
+	public boolean canEditWards() {
+		return rank != null && (rank.getPermissions() & Constants.EDIT_WARD_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteWards() {
+		return rank != null && (rank.getPermissions() & Constants.DELETE_WARD_PERMISSION) != 0;
+	}
+
+	public boolean canCreateInterventionDetails(){
+		return rank != null && (rank.getPermissions() & Constants.NEW_INTERVENTION_DETAIL_PERMISSION) != 0;
+	}
+
+	public boolean canEditInterventionDetails(){
+		return rank != null && (rank.getPermissions() & Constants.EDIT_INTERVENTION_DETAIL_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteInterventionDetails(){
+		return rank != null && (rank.getPermissions() & Constants.DELETE_INTERVENTION_DETAIL_PERMISSION) != 0;
+	}
+
+	public boolean canCreateInterventionActions(){
+		return rank != null && (rank.getPermissions() & Constants.NEW_INTERVENTION_ACTION_PERMISSION) != 0;
+	}
+
+	public boolean canEditInterventionActions(){
+		return rank != null && (rank.getPermissions() & Constants.EDIT_INTERVENTION_ACTION_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteInterventionActions(){
+		return rank != null && (rank.getPermissions() & Constants.DELETE_INTERVENTION_ACTION_PERMISSION) != 0;
+	}
+
+	public boolean canCreateInterventionOutcomes(){
+		return rank != null && (rank.getPermissions() & Constants.NEW_INTERVENTION_OUTCOME_PERMISSION) != 0;
+	}
+
+	public boolean canEditInterventionOutcomes(){
+		return rank != null && (rank.getPermissions() & Constants.EDIT_INTERVENTION_OUTCOME_PERMISSION) != 0;
+	}
+
+	public boolean canDeleteInterventionOutcomes(){
+		return rank != null && (rank.getPermissions() & Constants.DELETE_INTERVENTION_OUTCOME_PERMISSION) != 0;
+	}
 }

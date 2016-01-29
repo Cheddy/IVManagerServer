@@ -1,7 +1,11 @@
 package net.cheddy.ivmanager.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import net.cheddy.ivmanager.model.mapper.DateTimeSerialiser;
 import org.joda.time.DateTime;
 
@@ -90,4 +94,19 @@ public class InterventionOutcome {
 		this.dateTime = datetime;
 	}
 
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof InterventionOutcome){
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.registerModule(new JodaModule());
+			mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			try {
+				return mapper.writeValueAsString(this).equals(mapper.writeValueAsString(obj));
+			} catch (JsonProcessingException e) {
+				return false;
+			}
+		}
+		return false;
+	}
 }
