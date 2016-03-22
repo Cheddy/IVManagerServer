@@ -6,6 +6,8 @@ import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.bundles.redirect.HttpsRedirect;
+import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -13,6 +15,7 @@ import net.cheddy.ivmanager.auth.CustomAuthenticator;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.config.Configuration;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.service.*;
 import org.skife.jdbi.v2.DBI;
 
@@ -40,6 +43,9 @@ public class Server extends Application<Configuration> {
 
 	@Override
 	public void initialize(Bootstrap<Configuration> bootstrap) {
+		bootstrap.addBundle(new RedirectBundle(
+				new HttpsRedirect()
+		));
 	}
 
 	@Override
@@ -58,8 +64,10 @@ public class Server extends Application<Configuration> {
 		dao.createOutcomesTable();
 		dao.createPatientsTable();
 		dao.createStaffRanksTable();
+		dao.createLogsTable();
 		dao.createStaffTable();
 		dao.createWardsTable();
+		Logger.dao = dao;
 		setAuthenticator(new CachingAuthenticator<BasicCredentials, UserSession>(environment.metrics(), new CustomAuthenticator(dao), CacheBuilderSpec.parse(configuration.getCacheBuilderSpec())));
 		environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<>(getAuthenticator(), "Authentication Required!", UserSession.class)));
 		environment.jersey().register(new InterventionService(dao));
@@ -70,6 +78,8 @@ public class Server extends Application<Configuration> {
 		environment.jersey().register(new WardService(dao));
 		environment.jersey().register(new StaffService(dao));
 		environment.jersey().register(new ImpactService(dao));
+		environment.jersey().register(new LogService(dao));
+
 	}
 
 	public static CachingAuthenticator<BasicCredentials, UserSession> getAuthenticator() {

@@ -1,7 +1,9 @@
 package net.cheddy.ivmanager.model;
 
 
-public class Ward {
+import net.cheddy.ivmanager.logging.Storable;
+
+public class Ward implements Storable {
 
 	private long id;
 	private long hospitalId;
@@ -16,6 +18,11 @@ public class Ward {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 15;
 	}
 
 	/**

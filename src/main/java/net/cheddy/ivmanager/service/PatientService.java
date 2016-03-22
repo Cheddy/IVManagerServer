@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.auth.Auth;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Patient;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,12 +42,15 @@ public class PatientService {
 				if(!session.getStaff().canCreatePatients()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
-				getDao().insertPatient(patient);
+				patient.setId(getDao().insertPatient(patient));
+				Logger.logInsertion(session, patient);
 			} else {
 				if(!session.getStaff().canEditPatients()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
+				Patient original = getDao().patientForId(patient.getId());
 				getDao().updatePatient(patient);
+				Logger.logUpdate(session, patient, original);
 			}
 			return Response.accepted().build();
 		} catch (IOException e) {
@@ -66,6 +70,7 @@ public class PatientService {
 		try {
 			Patient patient = mapper.readValue(data, Patient.class);
 			getDao().deletePatient(patient);
+			Logger.logDeletion(session, patient);
 			return Response.accepted().build();
 		} catch (IOException e) {
 			e.printStackTrace();

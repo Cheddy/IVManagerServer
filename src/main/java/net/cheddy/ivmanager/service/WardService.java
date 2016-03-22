@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.auth.Auth;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Ward;
 import net.cheddy.ivmanager.model.complete.CompleteWard;
 
@@ -39,20 +40,23 @@ public class WardService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			CompleteWard completeWard = mapper.readValue(data, CompleteWard.class);
-			Ward staff = completeWard.toWard();
-			if(staff == null){
+			Ward ward = completeWard.toWard();
+			if(ward == null){
 				return Response.status(Status.NOT_ACCEPTABLE).tag("Hospital not present").build();
 			}
-			if (staff.getId() == -1) {
+			if (ward.getId() == -1) {
 				if(!session.getStaff().canCreateWards()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
-				getDao().insertWard(staff);
+				completeWard.setId(getDao().insertWard(ward));
+				Logger.logInsertion(session, completeWard);
 			} else {
 				if(!session.getStaff().canEditWards()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
-				getDao().updateWard(staff);
+				CompleteWard original = new CompleteWard(getDao(), getDao().wardForId(ward.getId()));
+				getDao().updateWard(ward);
+				Logger.logUpdate(session, completeWard, original);
 			}
 			return Response.accepted().build();
 		} catch (IOException e) {
@@ -73,6 +77,7 @@ public class WardService {
 			CompleteWard completeWard = mapper.readValue(data, CompleteWard.class);
 			Ward ward = completeWard.toWard();
 			getDao().deleteWard(ward);
+			Logger.logDeletion(session, ward);
 			return Response.accepted().build();
 		} catch (IOException e) {
 			e.printStackTrace();

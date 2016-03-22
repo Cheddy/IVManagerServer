@@ -3,6 +3,7 @@ package net.cheddy.ivmanager.model.complete;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Storable;
 import net.cheddy.ivmanager.model.*;
 import net.cheddy.ivmanager.model.mapper.DateTimeSerialiser;
 import org.joda.time.DateTime;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 
-public class CompleteIntervention {
+public class CompleteIntervention implements Storable {
 
 	private long id = -1;
 	private Patient patient;
@@ -106,6 +107,11 @@ public class CompleteIntervention {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 18;
 	}
 
 	/**

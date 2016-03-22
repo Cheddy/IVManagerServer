@@ -7,6 +7,7 @@ import io.dropwizard.auth.basic.BasicCredentials;
 import net.cheddy.ivmanager.Server;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.complete.CompleteStaff;
 
@@ -58,8 +59,19 @@ public class StaffService {
 
 			Staff staff = completeStaff.toStaff(dao);
 			if (staff.getId() == -1) {
-				getDao().insertStaff(staff);
+				completeStaff.setId(getDao().insertStaff(staff));
+				completeStaff.setPasswordHash(null);
+				Logger.logInsertion(session, completeStaff);
 			} else {
+				if(completeStaff.getId() == session.getStaff().getId()){
+					staff.setRankId(session.getStaff().getRank().getId());
+					staff.setUsername(session.getStaff().getUsername());
+				}
+				CompleteStaff original = new CompleteStaff(getDao(), getDao().staffForId(staff.getId()));
+				getDao().updateStaff(staff);
+				completeStaff.setPasswordHash(null);
+				original.setPasswordHash(null);
+				Logger.logUpdate(session, completeStaff, original);
 				if(completeStaff.getPasswordHash() != null && !completeStaff.getPasswordHash().isEmpty() && !completeStaff.getPasswordHash().equals(session.getStaff().getPasswordHash())){
 					Server.getAuthenticator().invalidateAll(new Predicate<BasicCredentials>(){
 						@Override
@@ -68,7 +80,6 @@ public class StaffService {
 						}
 					});
 				}
-				getDao().updateStaff(staff);
 			}
 			return Response.accepted().build();
 		} catch (IOException e) {
@@ -92,6 +103,7 @@ public class StaffService {
 			}
 			Staff staff = completeStaff.toStaff(dao);
 			getDao().deleteStaff(staff);
+			Logger.logDeletion(session, completeStaff);
 			return Response.accepted().build();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,11 +1,12 @@
 package net.cheddy.ivmanager.model.complete;
 
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Storable;
 import net.cheddy.ivmanager.model.Hospital;
 import net.cheddy.ivmanager.model.Ward;
 
 
-public class CompleteWard {
+public class CompleteWard implements Storable {
 
 	private long id;
 	private Hospital hospital;
@@ -43,6 +44,11 @@ public class CompleteWard {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 15;
 	}
 
 	/**

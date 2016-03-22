@@ -8,6 +8,7 @@ import net.cheddy.ivmanager.Server;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.config.Constants;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.StaffRank;
 
@@ -51,12 +52,16 @@ public class StaffRankService {
 				if(!session.getStaff().canCreateStaffRanks()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
-				getDao().insertStaffRank(staffRank);
+				staffRank.setId(getDao().insertStaffRank(staffRank));
+				Logger.logInsertion(session, staffRank);
 			} else {
 				if(!session.getStaff().canEditStaffRanks()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
+				StaffRank original = getDao().staffRankForId(staffRank.getId());
 				getDao().updateStaffRank(staffRank);
+				Logger.logUpdate(session, staffRank, original);
+
 				final Iterator<Staff> it = getDao().allStaff();
 				final ArrayList<Staff> staffs = new ArrayList<>();
 				it.forEachRemaining(t -> staffs.add(t));
@@ -90,6 +95,7 @@ public class StaffRankService {
 		try {
 			StaffRank staffRank = mapper.readValue(data, StaffRank.class);
 			getDao().deleteStaffRank(staffRank);
+			Logger.logDeletion(session, staffRank);
 			return Response.accepted().build();
 		} catch (Exception e) {
 			Response.status(Status.BAD_REQUEST).build();

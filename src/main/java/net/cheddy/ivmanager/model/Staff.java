@@ -1,8 +1,9 @@
 package net.cheddy.ivmanager.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.cheddy.ivmanager.logging.Storable;
 
-public class Staff {
+public class Staff implements Storable {
 
 	private long id;
 	private String username;
@@ -23,6 +24,11 @@ public class Staff {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 9;
 	}
 
 	/**

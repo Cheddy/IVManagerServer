@@ -1,7 +1,9 @@
 package net.cheddy.ivmanager.model;
 
 
-public class Impact {
+import net.cheddy.ivmanager.logging.Storable;
+
+public class Impact implements Storable {
 
 	long id;
 	String name;
@@ -14,6 +16,11 @@ public class Impact {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 3;
 	}
 
 	/**

@@ -18,7 +18,8 @@ import java.util.Iterator;
 		PatientMapper.class,
 		StaffMapper.class,
 		StaffRankMapper.class,
-		WardMapper.class})
+		WardMapper.class,
+		LogMapper.class})
 public interface DAO {
 
 	@SqlUpdate(value = "CREATE DATABASE IF NOT EXISTS IVManager")
@@ -32,6 +33,9 @@ public interface DAO {
 
 	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Staff (id BIGINT NOT NULL AUTO_INCREMENT, username VARCHAR(255) NOT NULL UNIQUE, surname VARCHAR(255) NOT NULL, othernames VARCHAR(255) NOT NULL, passwordHash VARCHAR(32) CHARACTER  SET utf8 COLLATE utf8_general_ci NOT NULL, passwordSalt VARCHAR(32) CHARACTER  SET utf8 COLLATE utf8_general_ci NOT NULL, rankId BIGINT NOT NULL, PRIMARY KEY (id))")
 	void createStaffTable();
+
+	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS Logs (id BIGINT NOT NULL AUTO_INCREMENT, staffId BIGINT NOT NULL, opcode INT NOT NULL, description VARCHAR(255) NOT NULL, oldData TEXT, newData TEXT, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id))")
+	void createLogsTable();
 
 	@SqlUpdate(value = "CREATE TABLE IF NOT EXISTS StaffRanks (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE, permissions BIGINT NOT NULL, PRIMARY KEY (id))")
 	void createStaffRanksTable();
@@ -59,6 +63,9 @@ public interface DAO {
 
 	@SqlQuery("SELECT * FROM Interventions ORDER BY dateTime")
 	Iterator<Intervention> allInterventions();
+
+	@SqlQuery("SELECT * FROM Logs ORDER BY timestamp DESC")
+	Iterator<Log> allLogs();
 
 	@SqlQuery("SELECT * FROM Interventions WHERE id = :id")
 	Intervention interventionForId(@Bind("id") long id);
@@ -119,25 +126,33 @@ public interface DAO {
 	void updateIntervention(@BindBean Intervention intervention);
 
 	@SqlUpdate(value = "INSERT INTO Hospitals VALUES (default, :name)")
-	void insertHospital(@BindBean Hospital hospital);
+	@GetGeneratedKeys
+	long insertHospital(@BindBean Hospital hospital);
 
 	@SqlUpdate(value = "UPDATE Hospitals SET name=:name WHERE id=:id")
 	void updateHospital(@BindBean Hospital hospital);
 
 	@SqlUpdate(value = "INSERT INTO Impacts VALUES (default, :name)")
-	void insertImpact(@BindBean Impact impact);
+	@GetGeneratedKeys
+	long insertImpact(@BindBean Impact impact);
 
 	@SqlUpdate(value = "UPDATE Impacts SET name=:name WHERE id=:id")
 	void updateImpact(@BindBean Impact impact);
 
+	@SqlUpdate(value = "INSERT INTO Logs VALUES (default, :staffId, :opcode, :description, :oldData, :newData, default)")
+	@GetGeneratedKeys
+	long insertLog(@BindBean Log log);
+
 	@SqlUpdate(value = "INSERT INTO StaffRanks VALUES (default, :name, :permissions)")
-	void insertStaffRank(@BindBean StaffRank staffRank);
+	@GetGeneratedKeys
+	long insertStaffRank(@BindBean StaffRank staffRank);
 
 	@SqlUpdate(value = "UPDATE StaffRanks SET name=:name, permissions=:permissions WHERE id=:id")
 	void updateStaffRank(@BindBean StaffRank staffRank);
 
 	@SqlUpdate(value = "INSERT INTO Patients VALUES (default, :rtx, :surname, :othernames, :dob)")
-	void insertPatient(@BindBean Patient patient);
+	@GetGeneratedKeys
+	long insertPatient(@BindBean Patient patient);
 
 	@SqlUpdate(value = "UPDATE Patients SET rtx=:rtx, surname=:surname,othernames=:othernames, dob=:dob WHERE id=:id")
 	void updatePatient(@BindBean Patient patient);
@@ -161,13 +176,15 @@ public interface DAO {
 	void updateInterventionDetail(@BindBean InterventionDetail interventionDetail);
 
 	@SqlUpdate(value = "INSERT INTO Staff VALUES (default, :username, :surname, :othernames, :passwordHash, :passwordSalt, :rankId)")
-	void insertStaff(@BindBean Staff staff);
+	@GetGeneratedKeys
+	long insertStaff(@BindBean Staff staff);
 
 	@SqlUpdate(value = "UPDATE Staff SET username=:username, surname=:surname, othernames=:othernames, passwordSalt=:passwordSalt, passwordHash=:passwordHash, rankId=:rankId WHERE id=:id")
 	void updateStaff(@BindBean Staff staff);
 
 	@SqlUpdate(value = "INSERT INTO Wards VALUES (default, :hospitalId, :name)")
-	void insertWard(@BindBean Ward ward);
+	@GetGeneratedKeys
+	long insertWard(@BindBean Ward ward);
 
 	@SqlUpdate(value = "UPDATE Wards SET hospitalId=:hospitalId, name=:name WHERE id=:id")
 	void updateWard(@BindBean Ward ward);
@@ -210,4 +227,8 @@ public interface DAO {
 
 	@SqlUpdate(value = "DELETE FROM Patients WHERE id=:id")
 	void deletePatient(@BindBean Patient patient);
+
+	@SqlUpdate(value = "DELETE FROM Logs")
+	void clearLogs();
+
 }

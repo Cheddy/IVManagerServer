@@ -32,5 +32,7 @@ public interface Constants {
 	public static final long NEW_INTERVENTION_OUTCOME_PERMISSION = 1L << 27;
 	public static final long EDIT_INTERVENTION_OUTCOME_PERMISSION = 1L << 28;
 	public static final long DELETE_INTERVENTION_OUTCOME_PERMISSION = 1L << 29;
+	public static final long VIEW_LOGS_PERMISSION = 1L << 30;
+	public static final long CLEAR_LOGS_PERMISSION = 1L << 31;
 
 }

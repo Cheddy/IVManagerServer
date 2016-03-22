@@ -1,9 +1,10 @@
 package net.cheddy.ivmanager.model;
 
+import net.cheddy.ivmanager.logging.Storable;
 import org.hibernate.validator.constraints.NotEmpty;
 
 
-public class StaffRank {
+public class StaffRank implements Storable {
 
 	private long id = -1;
 	@NotEmpty
@@ -18,6 +19,11 @@ public class StaffRank {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 12;
 	}
 
 	/**

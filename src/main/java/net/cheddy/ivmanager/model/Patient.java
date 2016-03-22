@@ -1,9 +1,11 @@
 package net.cheddy.ivmanager.model;
 
+import net.cheddy.ivmanager.logging.Storable;
+
 import java.sql.Date;
 
 
-public class Patient {
+public class Patient implements Storable {
 
 	private long id;
 	private long rtx;
@@ -20,6 +22,11 @@ public class Patient {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 6;
 	}
 
 	/**

@@ -1,8 +1,9 @@
 package net.cheddy.ivmanager.model;
 
+import net.cheddy.ivmanager.logging.Storable;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class Hospital {
+public class Hospital implements Storable{
 
 	private long id = -1;
 	@NotEmpty
@@ -16,6 +17,11 @@ public class Hospital {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 0;
 	}
 
 	/**

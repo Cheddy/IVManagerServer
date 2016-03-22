@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.auth.Auth;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Impact;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,12 +42,15 @@ public class ImpactService {
 				if(!session.getStaff().canCreateImpacts()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
-				getDao().insertImpact(impact);
+				impact.setId(getDao().insertImpact(impact));
+				Logger.logInsertion(session, impact);
 			} else {
 				if(!session.getStaff().canEditImpacts()){
 					return Response.status(Status.UNAUTHORIZED).build();
 				}
+				Impact original = getDao().impactForId(impact.getId());
 				getDao().updateImpact(impact);
+				Logger.logUpdate(session, impact, original);
 			}
 			return Response.accepted().build();
 		} catch (IOException e) {
@@ -66,6 +70,7 @@ public class ImpactService {
 		try {
 			Impact impact = mapper.readValue(data, Impact.class);
 			getDao().deleteImpact(impact);
+			Logger.logDeletion(session, impact);
 			return Response.accepted().build();
 		} catch (IOException e) {
 			e.printStackTrace();

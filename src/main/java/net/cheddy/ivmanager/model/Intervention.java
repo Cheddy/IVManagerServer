@@ -1,11 +1,12 @@
 package net.cheddy.ivmanager.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import net.cheddy.ivmanager.logging.Storable;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.NotNull;
 
-public class Intervention {
+public class Intervention implements Storable {
 
 	private long id = -1;
 	@NotNull
@@ -36,6 +37,11 @@ public class Intervention {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 18;
 	}
 
 	/**

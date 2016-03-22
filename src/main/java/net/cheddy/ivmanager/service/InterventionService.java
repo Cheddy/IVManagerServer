@@ -7,6 +7,7 @@ import io.dropwizard.auth.Auth;
 import io.dropwizard.jersey.params.LongParam;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.Intervention;
 import net.cheddy.ivmanager.model.InterventionAction;
 import net.cheddy.ivmanager.model.InterventionDetail;
@@ -35,14 +36,14 @@ public class InterventionService {
 
 	@GET
 	@Path("/{id}")
-	public CompleteIntervention getIntervention(@PathParam(value = "id") LongParam id) {
+	public CompleteIntervention getIntervention(@Auth UserSession session, @PathParam(value = "id") LongParam id) {
 		return new CompleteIntervention(dao, id.get());
 	}
 
 
 	@GET
 	@Path("/all")
-	public CompleteIntervention[] getAllInterventions() {
+	public CompleteIntervention[] getAllInterventions(@Auth UserSession session) {
 		Iterator<Intervention> it = dao.allInterventions();
 		ArrayList<CompleteIntervention> interventionViews = new ArrayList<>();
 		it.forEachRemaining(t -> interventionViews.add(new CompleteIntervention(dao, t)));
@@ -61,6 +62,7 @@ public class InterventionService {
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		try {
 			CompleteIntervention completeIntervention = mapper.readValue(data, CompleteIntervention.class);
+
 			Intervention intervention = completeIntervention.toIntervention();
 			long id = intervention.getId();
 			if (id == -1) {
@@ -69,13 +71,18 @@ public class InterventionService {
 				}
 				intervention.setStaffId(session.getStaff().getId());
 				id = getDao().insertIntervention(intervention);
+				completeIntervention.setId(id);
+				Logger.logInsertion(session, completeIntervention);
+
 			} else {
 				if (!session.getStaff().canEditInterventions()) {
 					return Response.status(Response.Status.UNAUTHORIZED).build();
 				}
 				Intervention original = getDao().interventionForId(id);
 				intervention.setStaffId(original.getStaffId());
+				CompleteIntervention originalComplete = new CompleteIntervention(getDao(), getDao().interventionForId(id));
 				getDao().updateIntervention(intervention);
+				Logger.logUpdate(session, completeIntervention, originalComplete);
 			}
 			boolean auth = true;
 
@@ -189,6 +196,7 @@ public class InterventionService {
 					}
 				}
 			}
+
 			if (!auth) {
 				return Response.status(Response.Status.UNAUTHORIZED).build();
 			}
@@ -213,6 +221,7 @@ public class InterventionService {
 			CompleteIntervention completeIntervention = mapper.readValue(data, CompleteIntervention.class);
 			Intervention intervention = completeIntervention.toIntervention();
 			getDao().deleteIntervention(intervention);
+			Logger.logDeletion(session, completeIntervention);
 			getDao().deleteAllInterventionActionsForIntervention(intervention);
 			getDao().deleteAllInterventionDetailsForIntervention(intervention);
 			getDao().deleteAllInterventionOutcomesForIntervention(intervention);

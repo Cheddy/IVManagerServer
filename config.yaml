@@ -17,8 +17,8 @@ cacheBuilderSpec: maximumSize=10000, expireAfterAccess=10m
 
 server:
   applicationConnectors:
-    - type: http
-      port: 8080
+ #   - type: http
+  #    port: 8080
     - type: https
       port: 8443
       keyStorePath: example.keystore

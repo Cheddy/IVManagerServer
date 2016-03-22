@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.cheddy.ivmanager.auth.AuthUtils;
 import net.cheddy.ivmanager.config.Constants;
 import net.cheddy.ivmanager.database.DAO;
+import net.cheddy.ivmanager.logging.Storable;
 import net.cheddy.ivmanager.model.Staff;
 import net.cheddy.ivmanager.model.StaffRank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -14,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-public class CompleteStaff {
+public class CompleteStaff implements Storable{
 
 	private long id;
 	@NotEmpty
@@ -77,6 +78,11 @@ public class CompleteStaff {
 	 */
 	public long getId() {
 		return id;
+	}
+
+	@Override
+	public int getType() {
+		return 9;
 	}
 
 	/**
@@ -276,5 +282,13 @@ public class CompleteStaff {
 
 	public boolean canDeleteInterventionOutcomes(){
 		return rank != null && (rank.getPermissions() & Constants.DELETE_INTERVENTION_OUTCOME_PERMISSION) != 0;
+	}
+
+	public boolean canViewLogs(){
+		return rank != null && (rank.getPermissions() & Constants.VIEW_LOGS_PERMISSION) != 0;
+	}
+
+	public boolean canClearLogs(){
+		return rank != null && (rank.getPermissions() & Constants.CLEAR_LOGS_PERMISSION) != 0;
 	}
 }
