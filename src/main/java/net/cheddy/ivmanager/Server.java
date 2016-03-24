@@ -11,15 +11,21 @@ import io.dropwizard.bundles.redirect.RedirectBundle;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import net.cheddy.ivmanager.auth.AuthUtils;
 import net.cheddy.ivmanager.auth.CustomAuthenticator;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.config.Configuration;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.logging.Logger;
+import net.cheddy.ivmanager.model.StaffRank;
+import net.cheddy.ivmanager.model.complete.CompleteStaff;
 import net.cheddy.ivmanager.service.*;
 import org.skife.jdbi.v2.DBI;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * @author : Cheddy
@@ -79,7 +85,24 @@ public class Server extends Application<Configuration> {
 		environment.jersey().register(new StaffService(dao));
 		environment.jersey().register(new ImpactService(dao));
 		environment.jersey().register(new LogService(dao));
+    }
 
+	public static void install(DAO dao){
+        dao.createDatabase();
+        dao.useDatabase();
+
+		StaffRank rank = new StaffRank();
+		rank.setName("Admin");
+		rank.setPermissions(9007199254740991L);
+		rank.setId(dao.insertStaffRank(rank));
+
+		CompleteStaff completeStaff = new CompleteStaff();
+		completeStaff.setSurname("User");
+		completeStaff.setOthernames("Admin");
+		completeStaff.setRank(rank);
+		completeStaff.setUsername("Admin");
+		completeStaff.setPasswordHash("5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8");
+		dao.insertStaff(completeStaff.toStaff(dao));
 	}
 
 	public static CachingAuthenticator<BasicCredentials, UserSession> getAuthenticator() {
