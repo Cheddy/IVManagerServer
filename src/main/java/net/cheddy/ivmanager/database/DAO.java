@@ -22,7 +22,10 @@ import java.util.Iterator;
 		LogMapper.class})
 public interface DAO {
 
-	@SqlUpdate(value = "CREATE DATABASE IF NOT EXISTS IVManager")
+    @SqlUpdate(value = "DROP DATABASE IVManager")
+    void dropDatabase();
+
+    @SqlUpdate(value = "CREATE DATABASE IF NOT EXISTS IVManager")
 	void createDatabase();
 
 	@SqlUpdate(value = "Use IVManager")

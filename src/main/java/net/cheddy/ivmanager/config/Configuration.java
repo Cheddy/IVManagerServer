@@ -8,6 +8,29 @@ import javax.validation.constraints.NotNull;
 
 public class Configuration extends io.dropwizard.Configuration {
 
+    private boolean install = false;
+
+    @Valid
+	@NotNull
+	private DataSourceFactory installDatabase = new DataSourceFactory() {
+		@Override
+		public String getDriverClass() {
+			return "com.mysql.jdbc.Driver";
+		}
+
+		public String getUrl() {
+			return "jdbc:mysql://localhost:3306";
+		}
+
+		public String getUser() {
+			return "root";
+		}
+
+		public String getPassword() {
+			return "123eRTy789!)";
+		}
+	};
+
 	@Valid
 	@NotNull
 	private DataSourceFactory database = new DataSourceFactory() {
@@ -61,5 +84,19 @@ public class Configuration extends io.dropwizard.Configuration {
 		this.cacheBuilderSpec = cacheBuilderSpec;
 	}
 
+    public DataSourceFactory getInstallDatabase() {
+        return installDatabase;
+    }
 
+    public void setInstallDatabase(DataSourceFactory installDatabase) {
+        this.installDatabase = installDatabase;
+    }
+
+    public boolean install() {
+        return install;
+    }
+
+    public void setInstall(boolean install) {
+        this.install = install;
+    }
 }

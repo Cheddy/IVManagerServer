@@ -15,6 +15,7 @@ import net.cheddy.ivmanager.auth.AuthUtils;
 import net.cheddy.ivmanager.auth.CustomAuthenticator;
 import net.cheddy.ivmanager.auth.UserSession;
 import net.cheddy.ivmanager.config.Configuration;
+import net.cheddy.ivmanager.config.InstallCommand;
 import net.cheddy.ivmanager.database.DAO;
 import net.cheddy.ivmanager.logging.Logger;
 import net.cheddy.ivmanager.model.StaffRank;
@@ -34,12 +35,13 @@ public class Server extends Application<Configuration> {
 
 	private static CachingAuthenticator<BasicCredentials, UserSession> authenticator;
 
+
 	public static void main(String[] args) throws Exception {
 		File file = new File("config.yaml");
 		if(!file.exists()){
 			file.createNewFile();
 		}
-		new Server().run(new String[] {"server", "config.yaml"});
+		new Server().run("server", "config.yaml");
 	}
 
 	@Override
@@ -49,7 +51,7 @@ public class Server extends Application<Configuration> {
 
 	@Override
 	public void initialize(Bootstrap<Configuration> bootstrap) {
-		bootstrap.addBundle(new RedirectBundle(
+        bootstrap.addBundle(new RedirectBundle(
 				new HttpsRedirect()
 		));
 	}
@@ -57,22 +59,18 @@ public class Server extends Application<Configuration> {
 	@Override
 	public void run(Configuration configuration, Environment environment) {
 		final DBIFactory factory = new DBIFactory();
-		final DBI jdbi = factory.build(environment, configuration.getDatabase(), "mysql");
 
+        if(configuration.install()) {
+            DBI jdbiInstall = factory.build(environment, configuration.getInstallDatabase(), "mysql");
+            DAO daoInstall = jdbiInstall.onDemand(DAO.class);
+            install(daoInstall);
+            System.out.println("Install Complete - Change configuration to disable install and then restart the application!");
+            System.exit(0);
+        }
+
+        final DBI jdbi = factory.build(environment, configuration.getDatabase(), "mysql");
 		final DAO dao = jdbi.onDemand(DAO.class);
-		dao.createDatabase();
-		dao.useDatabase();
-		dao.createInterventionTable();
-		dao.createActionsTable();
-		dao.createDetailsTable();
-		dao.createHospitalsTable();
-		dao.createImpactsTable();
-		dao.createOutcomesTable();
-		dao.createPatientsTable();
-		dao.createStaffRanksTable();
-		dao.createLogsTable();
-		dao.createStaffTable();
-		dao.createWardsTable();
+
 		Logger.dao = dao;
 		setAuthenticator(new CachingAuthenticator<BasicCredentials, UserSession>(environment.metrics(), new CustomAuthenticator(dao), CacheBuilderSpec.parse(configuration.getCacheBuilderSpec())));
 		environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<>(getAuthenticator(), "Authentication Required!", UserSession.class)));
@@ -85,13 +83,26 @@ public class Server extends Application<Configuration> {
 		environment.jersey().register(new StaffService(dao));
 		environment.jersey().register(new ImpactService(dao));
 		environment.jersey().register(new LogService(dao));
+        environment.jersey().register(new AuditService(dao));
     }
 
 	public static void install(DAO dao){
+        dao.dropDatabase();
         dao.createDatabase();
         dao.useDatabase();
+        dao.createInterventionTable();
+        dao.createActionsTable();
+        dao.createDetailsTable();
+        dao.createHospitalsTable();
+        dao.createImpactsTable();
+        dao.createOutcomesTable();
+        dao.createPatientsTable();
+        dao.createStaffRanksTable();
+        dao.createLogsTable();
+        dao.createStaffTable();
+        dao.createWardsTable();
 
-		StaffRank rank = new StaffRank();
+        StaffRank rank = new StaffRank();
 		rank.setName("Admin");
 		rank.setPermissions(9007199254740991L);
 		rank.setId(dao.insertStaffRank(rank));

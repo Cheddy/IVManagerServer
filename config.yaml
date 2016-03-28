@@ -1,4 +1,19 @@
 # Database settings.
+installDatabase:
+
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+
+  # the username
+  user: root
+
+  # the password
+  password: 123eRTy789!)
+
+  # the JDBC URL
+  url: jdbc:mysql://localhost:3306
+
+# Database settings.
 database:
 
   # the name of your JDBC driver
@@ -14,6 +29,8 @@ database:
   url: jdbc:mysql://localhost:3306/IVManager
   
 cacheBuilderSpec: maximumSize=10000, expireAfterAccess=10m
+
+install: false
 
 server:
   applicationConnectors:
